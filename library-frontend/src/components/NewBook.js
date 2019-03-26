@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
   const [author, setAuhtor] = useState('')
@@ -7,14 +8,21 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  if (!props.show) {
-    return null
-  }
+
+
+
 
   const submit = async (e) => {
     e.preventDefault()
-    
-    console.log('add book...')
+     
+   await props.addBook({
+    variables: {
+      title,
+      author,
+      published: parseInt(published),
+      genres
+    }
+  })
 
     setTitle('')
     setPublished('')
@@ -23,9 +31,15 @@ const NewBook = (props) => {
     setGenre('')
   }
 
+
+
   const addGenre = () => {
     setGenres(genres.concat(genre))
     setGenre('')
+  }
+
+  if (!props.show) {
+    return null
   }
 
   return (
