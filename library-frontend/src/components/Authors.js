@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
-
-
-
+import Select from 'react-select'
 
 const Authors = (props) => {
 
-const [name, setName] = useState('')
+const [selectedName, setSelectedName] = useState(null)
 const [born, setBorn] = useState('')
+
 
   if (!props.show) {
     return null
@@ -19,15 +18,30 @@ const [born, setBorn] = useState('')
   }
 
   const authors = props.result.data.allAuthors
+  const options = authors.map ((author) => {
+    return { 
+      value: author.name,
+      label: author.name
+    }
+    })
+ 
+ 
+  
 
   const submit = async (e) => {
     e.preventDefault()
-    await props.editBorn({
-      variables: {
-        name,
-        born: parseInt(born)
-      }
-    })
+    if (selectedName && born) {
+       await props.editBorn({
+        variables: {
+          name: selectedName.value,
+          born: parseInt(born)
+        }
+      })
+    }
+  }
+
+  const onNameChange =  (value, {action, removedValue}) => {
+    setSelectedName(value)
   }
 
   return (
@@ -57,10 +71,10 @@ const [born, setBorn] = useState('')
       <h3>Set birthyear</h3>
       <form onSubmit = {submit}>
       <div>
-        name
-        <input
-          value = { name }
-          onChange = {({target}) => setName(target.value) }
+        <Select 
+          value = { selectedName }
+          onChange = { onNameChange }
+          options = { options } 
         />
       </div>
       <div>

@@ -63,7 +63,7 @@ const resultOfBooksQuery = useQuery(ALL_BOOKS)
 
   const addBook = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS}, {query: ALL_AUTHORS}]
-  })
+   })
 
   const editBorn = useMutation(EDIT_BORN, {
     refetchQueries: [{ query: ALL_AUTHORS }]
