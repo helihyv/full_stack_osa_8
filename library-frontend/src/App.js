@@ -42,6 +42,20 @@ const ALL_BOOKS = gql`
     }
   }
 `
+
+const EDIT_BORN = gql`
+  mutation editBorn($name: String!, $born: Int!) {
+    editAuthor (
+      name: $name 
+      born: $born
+    ) {
+      name
+      born
+    } 
+  }
+`
+
+
 const resultOfAuthorQuery = useQuery(ALL_AUTHORS)
 
 const resultOfBooksQuery = useQuery(ALL_BOOKS)
@@ -49,6 +63,10 @@ const resultOfBooksQuery = useQuery(ALL_BOOKS)
 
   const addBook = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS}, {query: ALL_AUTHORS}]
+  })
+
+  const editBorn = useMutation(EDIT_BORN, {
+    refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
   return (
@@ -61,7 +79,8 @@ const resultOfBooksQuery = useQuery(ALL_BOOKS)
 
       <Authors
         show={page === 'authors'}
-        result = {resultOfAuthorQuery}
+        result = { resultOfAuthorQuery }
+        editBorn = { editBorn}
       />
 
       <Books
