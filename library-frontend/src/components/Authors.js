@@ -30,14 +30,16 @@ const [born, setBorn] = useState('')
 
   const submit = async (e) => {
     e.preventDefault()
-    if (selectedName && born) {
+
        await props.editBorn({
         variables: {
           name: selectedName.value,
           born: parseInt(born)
         }
       })
-    }
+    
+      setBorn('')
+      setSelectedName(null)
   }
 
   const onNameChange =  (value, {action, removedValue}) => {
@@ -85,7 +87,7 @@ const [born, setBorn] = useState('')
         />
       </div>
       <div>
-            <button type = "submit" >update author</button>
+            <button type = "submit" disabled = {!selectedName || !parseInt(born) } >update author</button>
       </div>
 
       </form>
