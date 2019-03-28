@@ -104,7 +104,7 @@ const resolvers = {
           name: args.author
         })
         try {
-          author.save()
+          await author.save()
         } catch (error) {
           throw new UserInputError(error.message, {
             invalidArgs: args,
@@ -116,7 +116,7 @@ const resolvers = {
       const book = new Book({...args, author: author._id})
       
       try {
-        book.save()
+        await book.save()
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
@@ -134,7 +134,7 @@ const resolvers = {
       authorToEdit.born = args.born 
 
       try {
-        authorToEdit.save()
+        await authorToEdit.save()
       } catch (error) {
         throw new UserInputError(error.message, {
           invalidArgs: args,
