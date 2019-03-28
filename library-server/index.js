@@ -5,7 +5,14 @@ const config = require('./utils/config')
 const Book = require('./models/book')
 const Author = require('./models/author')
 
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true}).then(() => {
+mongoose.connect(
+  config.MONGODB_URI, 
+  { 
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+  })
+  .then(() => {
   console.log('connected to mongoDB')
 })
 .catch((error) => {
@@ -18,7 +25,7 @@ const typeDefs = gql`
 
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     id: ID!
     genres: [String!]!
 
@@ -56,10 +63,10 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
 
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
+    bookCount: () => Book.collection.countDocuments(),
+    authorCount: () => Author.collection.countDocuments(),
     allBooks: (root, args) => {
-      let booksToList
+    /*  let booksToList
       if (args.author) {
 
         
@@ -71,10 +78,10 @@ const resolvers = {
       if (args.genre) {
         booksToList = booksToList.filter((book) => book.genres.includes(args.genre))
       }
-
-      return booksToList
+    */
+      return Book.find({})
     },
-    allAuthors: () => authors,
+    allAuthors: () => Author.find(),
     },
 
   Author: {
@@ -82,20 +89,25 @@ const resolvers = {
   },
   
   Mutation: {
-    addBook: (root, args) => {
-      const book = {...args, id: uuid()}
-      books = books.concat(book)
+    addBook: async (root, args) => {
 
-      if (!authors.find((author) => author.name === args.author)) {
-        const newAuthor = {
-          name: args.author,
-          id: uuid()
-        }
-        authors = authors.concat(newAuthor)
+    let author = await Author.findOne({ name: args.author})
+
+    console.log(author)
+
+      if (!author) { 
+        author = new Author({
+          name: args.author
+        })
+        author.save()
       }
 
-      return book
 
+    const book = new Book({...args, author: author._id})
+    console.log(book)
+    return book.save()
+
+    
     },
 
     editAuthor: (root, args) => {
