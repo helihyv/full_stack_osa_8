@@ -5,6 +5,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 let MONGODB_URI = process.env.MONGODB_URI
 
+let JWT_SECRET = "Hypersalainen salalause"
+
 module.exports = {
-    MONGODB_URI
+    MONGODB_URI,
+    JWT_SECRET
 }
