@@ -70,27 +70,29 @@ const [born, setBorn] = useState('')
         </tbody>
       </table>
 
-      <h3>Set birthyear</h3>
-      <form onSubmit = {submit}>
-      <div>
-        <Select 
-          value = { selectedName }
-          onChange = { onNameChange }
-          options = { options } 
-        />
-      </div>
-      <div>
-        born
-        <input
-          value = { born }
-          onChange = {({target}) => setBorn(target.value) }
-        />
-      </div>
-      <div>
-            <button type = "submit" disabled = {!selectedName || !parseInt(born) } >update author</button>
-      </div>
+      <div style = {!localStorage.getItem('library-user-token') ? { display: 'none' } : {} }>
+        <h3>Set birthyear</h3>
+        <form onSubmit = {submit}>
+        <div>
+          <Select 
+            value = { selectedName }
+            onChange = { onNameChange }
+            options = { options } 
+          />
+        </div>
+        <div>
+          born
+          <input
+            value = { born }
+            onChange = {({target}) => setBorn(target.value) }
+          />
+        </div>
+        <div>
+              <button type = "submit" disabled = {!selectedName || !parseInt(born) } >update author</button>
+        </div>
 
-      </form>
+        </form>
+      </div>
 
     </div>
   )
