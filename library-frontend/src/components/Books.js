@@ -1,47 +1,29 @@
-import React from 'react'
+import React from "react";
+import GenreChooser from "./GenreChooser";
+import BookTable from "./BookTable";
 
-
-
-
-const Books = (props) => {
+const Books = props => {
   if (!props.show) {
-    return null
+    return null;
   }
 
-
-
-  if (props.result.loading) {
-    return <div>loading...</div>
+  if (props.loading) {
+    return <div>loading...</div>;
   }
 
-  const books = props.result.data.allBooks
+  const books =
+    props.result && props.result.allBooks ? props.result.allBooks : [];
 
   return (
     <div>
       <h2>books</h2>
 
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>
-              author
-            </th>
-            <th>
-              published
-            </th>
-          </tr>
-          {books.map(a =>
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  )
-}
+      {props.genre ? <p> in genre {props.genre}</p> : null}
 
-export default Books
+      <BookTable books={books} />
+      <GenreChooser genres={props.genres} setGenre={props.setGenre} />
+    </div>
+  );
+};
+
+export default Books;
