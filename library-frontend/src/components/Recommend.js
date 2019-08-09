@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BookTable from "./BookTable";
 
 const Recommend = ({
@@ -6,6 +6,7 @@ const Recommend = ({
   favoriteGenreLoading,
   favoriteBooks,
   favoriteBooksLoading,
+  getFavoriteBooks,
   show
 }) => {
   if (!show) {

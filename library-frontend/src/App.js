@@ -108,10 +108,41 @@ const App = () => {
 
   const genres = useQuery(GENRES_FROM_ALL_BOOKS);
 
-  const myFavoriteGenre = useQuery(MY_FAVORITE_GENRE);
+  const fetchFavoriteBooks = () => {
+    if (
+      myFavoriteGenre &&
+      myFavoriteGenre.data &&
+      myFavoriteGenre.data.me &&
+      myFavoriteGenre.data.me.favoriteGenre
+    ) {
+      getFavoriteBooks({
+        variables: {
+          genre: myFavoriteGenre.data.me.favoriteGenre
+        }
+      });
+    }
+  };
+
+  const myFavoriteGenre = useQuery(MY_FAVORITE_GENRE, {
+    onCompleted: fetchFavoriteBooks
+  });
+
+  useEffect(() => {
+    console.log(myFavoriteGenre);
+
+    setToken(localStorage.getItem("library-user-token", token));
+
+    getBooks({
+      variables: { genre }
+    });
+  }, [genre]);
 
   const [addBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
+    refetchQueries: [
+      { query: ALL_BOOKS },
+      { query: ALL_AUTHORS },
+      { query: GENRES_FROM_ALL_BOOKS }
+    ]
   });
 
   const [editBorn] = useMutation(EDIT_BORN, {
@@ -119,30 +150,6 @@ const App = () => {
   });
 
   const [loginFunction] = useMutation(LOGIN);
-
-  useEffect(() => {
-    setToken(localStorage.getItem("library-user-token", token));
-    getBooks({
-      variables: { genre }
-    });
-    const favoriteGenre =
-      myFavoriteGenre &&
-      myFavoriteGenre.data &&
-      myFavoriteGenre.data.me &&
-      myFavoriteGenre.data.me.favoriteGenre
-        ? myFavoriteGenre.data.me.favoriteBooksLoadingAndData
-        : null;
-
-    console.log("Onkohan genreä");
-    if (favoriteGenre) {
-      console.log("On genre");
-      getFavoriteBooks({
-        variables: {
-          genre: favoriteGenre
-        }
-      });
-    }
-  }, [genre, myFavoriteGenre]);
 
   const errorNotification = () =>
     errorMessage && <div style={{ color: "red " }}>{errorMessage}</div>;
@@ -206,6 +213,7 @@ const App = () => {
         genre={genre}
         genres={genres}
         setGenre={setGenre}
+        getBooks={getBooks}
       />
 
       <NewBook show={page === "add"} addBook={addBook} />
@@ -216,6 +224,7 @@ const App = () => {
         favoriteGenre={myFavoriteGenre}
         loading={favoriteBooksLoading}
         favoriteGenreLoading={myFavoriteGenre.loading}
+        getFavoriteBooks={getFavoriteBooks}
       />
 
       <Login
