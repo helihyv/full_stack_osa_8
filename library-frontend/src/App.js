@@ -123,19 +123,29 @@ const App = () => {
     }
   };
 
+  // const myFavoriteGenre = useQuery(MY_FAVORITE_GENRE, {
+  //   onCompleted: fetchFavoriteBooks
+  // });
+
   const myFavoriteGenre = useQuery(MY_FAVORITE_GENRE, {
     onCompleted: fetchFavoriteBooks
   });
 
   useEffect(() => {
-    console.log(myFavoriteGenre);
+    console.log(genre, token);
 
     setToken(localStorage.getItem("library-user-token", token));
+
+    if (token) {
+      console.log("token löytyi");
+      console.log(myFavoriteGenre);
+      myFavoriteGenre.refetch();
+    }
 
     getBooks({
       variables: { genre }
     });
-  }, [genre]);
+  }, [genre, token]);
 
   const [addBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [

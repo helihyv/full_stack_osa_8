@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import GenreChooser from "./GenreChooser";
 import BookTable from "./BookTable";
 

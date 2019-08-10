@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import BookTable from "./BookTable";
 
 const Recommend = ({
@@ -7,6 +7,8 @@ const Recommend = ({
   favoriteBooks,
   favoriteBooksLoading,
   getFavoriteBooks,
+  getMyFavoriteGenre,
+  token,
   show
 }) => {
   if (!show) {
@@ -17,19 +19,13 @@ const Recommend = ({
     return <div>Loading...</div>;
   }
 
-  console.log(favoriteGenre.data);
-
   const genre =
-    !favoriteGenre ||
-    !favoriteGenre.data ||
-    favoriteGenre.data.me ||
+    favoriteGenre &&
+    favoriteGenre.data &&
+    favoriteGenre.data.me &&
     favoriteGenre.data.me.favoriteGenre
       ? favoriteGenre.data.me.favoriteGenre
       : null;
-
-  if (!genre) {
-    return <div>you have no favourite genre set</div>;
-  }
 
   const books =
     favoriteBooks && favoriteBooks.allBooks ? favoriteBooks.allBooks : [];
