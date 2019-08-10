@@ -154,7 +154,12 @@ const App = () => {
 
   const [addBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [
-      { query: ALL_BOOKS },
+      {
+        query: ALL_BOOKS,
+        variables: {
+          genre: ""
+        }
+      },
       { query: ALL_AUTHORS },
       { query: GENRES_FROM_ALL_BOOKS }
     ]
