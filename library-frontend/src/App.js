@@ -9,7 +9,8 @@ import {
   useQuery,
   useApolloClient,
   useMutation,
-  useLazyQuery
+  useLazyQuery,
+  useSubscription
 } from "@apollo/react-hooks";
 
 const App = () => {
@@ -94,6 +95,18 @@ const App = () => {
       }
     }
   `;
+
+  const BOOK_ADDED = gql`
+    subscription {
+      bookAdded {
+        title
+        author {
+          name
+        }
+        published
+      }
+    }
+  `;
   const [getBooks, booksLoadingAndData] = useLazyQuery(ALL_BOOKS);
 
   const booksLoading = booksLoadingAndData.loading;
@@ -123,22 +136,14 @@ const App = () => {
     }
   };
 
-  // const myFavoriteGenre = useQuery(MY_FAVORITE_GENRE, {
-  //   onCompleted: fetchFavoriteBooks
-  // });
-
   const myFavoriteGenre = useQuery(MY_FAVORITE_GENRE, {
     onCompleted: fetchFavoriteBooks
   });
 
   useEffect(() => {
-    console.log(genre, token);
-
     setToken(localStorage.getItem("library-user-token", token));
 
     if (token) {
-      console.log("token löytyi");
-      console.log(myFavoriteGenre);
       myFavoriteGenre.refetch();
     }
 
@@ -160,6 +165,13 @@ const App = () => {
   });
 
   const [loginFunction] = useMutation(LOGIN);
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const book = subscriptionData.data.bookAdded;
+      alert(`A new book has been added: ${book.title} by ${book.author.name}`);
+    }
+  });
 
   const errorNotification = () =>
     errorMessage && <div style={{ color: "red " }}>{errorMessage}</div>;
@@ -214,6 +226,7 @@ const App = () => {
         show={page === "authors"}
         result={resultOfAuthorQuery}
         editBorn={editBorn}
+        handleError={handleError}
       />
 
       <Books
@@ -226,7 +239,11 @@ const App = () => {
         getBooks={getBooks}
       />
 
-      <NewBook show={page === "add"} addBook={addBook} />
+      <NewBook
+        show={page === "add"}
+        addBook={addBook}
+        handleError={handleError}
+      />
 
       <Recommend
         show={page === "recommend"}

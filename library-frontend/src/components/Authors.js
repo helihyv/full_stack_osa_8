@@ -13,7 +13,10 @@ const Authors = props => {
     return <div>loading...</div>;
   }
 
-  const authors = props.result.data.allAuthors;
+  const authors =
+    props.result && props.result.data && props.result.data.allAuthors
+      ? props.result.data.allAuthors
+      : [];
   const options = authors.map(author => {
     return {
       value: author.name,
@@ -24,15 +27,19 @@ const Authors = props => {
   const submit = async e => {
     e.preventDefault();
 
-    await props.editBorn({
-      variables: {
-        name: selectedName.value,
-        born: parseInt(born)
-      }
-    });
+    try {
+      await props.editBorn({
+        variables: {
+          name: selectedName.value,
+          born: parseInt(born)
+        }
+      });
 
-    setBorn("");
-    setSelectedName(null);
+      setBorn("");
+      setSelectedName(null);
+    } catch (error) {
+      props.handleError(error);
+    }
   };
 
   const onNameChange = (value, { action, removedValue }) => {
