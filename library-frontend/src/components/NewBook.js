@@ -10,26 +10,21 @@ const NewBook = props => {
   const submit = async e => {
     e.preventDefault();
 
-    try {
-      await props.addBook({
-        variables: {
-          title,
-          author,
-          published: parseInt(published),
-          genres
-        }
-      });
+    await props.addBook({
+      variables: {
+        title,
+        author,
+        published: parseInt(published),
+        genres
+      }
+    });
 
-      setTitle("");
-      setPublished("");
-      setAuhtor("");
-      setGenres([]);
-      setGenre("");
-    } catch (error) {
-      props.handleError(error);
-    }
+    setTitle("");
+    setPublished("");
+    setAuhtor("");
+    setGenres([]);
+    setGenre("");
   };
-
   const addGenre = () => {
     setGenres(genres.concat(genre));
     setGenre("");
@@ -74,7 +69,14 @@ const NewBook = props => {
           </button>
         </div>
         <div>genres: {genres.join(" ")}</div>
-        <button type="submit">create book</button>
+        <button
+          type="submit"
+          disabled={
+            !parseInt(published) || title.length < 1 || author.length < 1
+          }
+        >
+          create book
+        </button>
       </form>
     </div>
   );

@@ -152,7 +152,18 @@ const App = () => {
     });
   }, [genre, token]);
 
+  const handleError = error => {
+    console.log(error.message);
+    if (error && error.graphQLErrors && error.graphQLErrors.length > 0)
+      setErrorMessage(error.graphQLErrors[0].message);
+    else if (error.message) setErrorMessage(error.message);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 10000);
+  };
+
   const [addBook] = useMutation(CREATE_BOOK, {
+    onError: handleError,
     refetchQueries: [
       {
         query: ALL_BOOKS,
@@ -166,6 +177,7 @@ const App = () => {
   });
 
   const [editBorn] = useMutation(EDIT_BORN, {
+    onError: handleError,
     refetchQueries: [{ query: ALL_AUTHORS }]
   });
 
@@ -180,13 +192,6 @@ const App = () => {
 
   const errorNotification = () =>
     errorMessage && <div style={{ color: "red " }}>{errorMessage}</div>;
-
-  const handleError = error => {
-    setErrorMessage(error.graphQLErrors[0].message);
-    setTimeout(() => {
-      setErrorMessage(null);
-    }, 10000);
-  };
 
   const logoutFunction = () => {
     setToken(null);
